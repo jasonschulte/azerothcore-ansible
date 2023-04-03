@@ -12,6 +12,13 @@
   become_user: "{{ azerothcore_user }}"
 
 #####################
+# Module source code
+#####################
+
+- name: Include task for get modules
+  include_tasks: "tasks/get_modules.yml"
+
+#####################
 # Do we have updates or not...
 #####################
 
@@ -34,8 +41,8 @@
     msg: "Server for release {{ git_commit_tag.stdout }} already exists, will exit"
   when: release_folder.stat.exists
 
-- meta: end_play
-  when: release_folder.stat.exists
+# - meta: end_play
+#   when: release_folder.stat.exists
 
 #####################
 # Custom modules
@@ -52,7 +59,7 @@
   shell: cd "{{ item.path }}" && git pull
   with_items:
     - "{{ modules_folder.files }}"
-  when: modules_folder is defined and modules_folder != ""
+  when: modules_folder is defined and modules_folder != "" and release_folder.stat.exists == false
 
 #####################
 # Build
@@ -62,6 +69,7 @@
   file:
     path: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/build"
     state: "absent"
+  when: release_folder.stat.exists == false
 
 - name: Create new build folder
   file:
@@ -70,19 +78,24 @@
     state: "directory"
     owner: "{{ azerothcore_user }}"
     group: "{{ azerothcore_user }}"
+  when: release_folder.stat.exists == false
 
 - name: Debug - configure before compiling
   debug:
     msg: 'cd "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/build" && cmake ../ -DCMAKE_INSTALL_PREFIX="/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_server_release }}" -DCMAKE_C_COMPILER={{ azerothcore_compiler }} -DCMAKE_CXX_COMPILER={{ azerothcore_compiler_xx }} -DWITH_WARNINGS=1 -DTOOLS_BUILD={{ azerothcore_tools }} -DSCRIPTS=static -DENABLE_EXTRAS={{ azerothcore_debug }} -DENABLE_EXTRA_LOGS={{ azerothcore_debug }}'
+  when: release_folder.stat.exists == false
 
 - name: Configure before compiling
   shell: cd "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/build" && cmake ../ -DCMAKE_INSTALL_PREFIX="/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_server_release }}" -DCMAKE_C_COMPILER={{ azerothcore_compiler }} -DCMAKE_CXX_COMPILER={{ azerothcore_compiler_xx }} -DWITH_WARNINGS=1 -DTOOLS_BUILD={{ azerothcore_tools }} -DSCRIPTS=static -DMODULES_STATIC=static -DENABLE_EXTRAS={{ azerothcore_debug }} -DENABLE_EXTRA_LOGS={{ azerothcore_debug }}
   become_user: "{{ azerothcore_user }}"
+  when: release_folder.stat.exists == false
 
 - name: Compile AzerothCore server
   shell: cd "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/build" && make -j $(nproc)
   become_user: "{{ azerothcore_user }}"
+  when: release_folder.stat.exists == false
 
 - name: Install AzerothCore server
   shell: cd "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/build" && make install
   become_user: "{{ azerothcore_user }}"
+  when: release_folder.stat.exists == false

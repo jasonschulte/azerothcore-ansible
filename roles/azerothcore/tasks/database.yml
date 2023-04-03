@@ -1,4 +1,10 @@
 ---
+# Is there an old build present
+- name: Check if former build is present
+  stat:
+    path: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_server }}"
+  register: former_build
+
 #####################
 # Create the proper databases/user needed
 #####################
@@ -34,26 +40,3 @@
     mode: "{{ item.mode }}"
   with_items:
     - { file: "auth_custom.sql", destination: "db_auth", mode: "0644" }
-
-- name: Assemble & Import only bases
-  shell: "bash /home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/apps/db_assembler/db_assembler.sh 6"
-  when: former_build.stat.exists is defined and former_build.stat.exists == false
-
-#####################
-# Backup SQL
-#####################
-
-- name: Backup databases
-  shell: cd "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/backup/" && ./backup.sh
-  when: former_build.stat.exists is defined and former_build.stat.exists == true
-
-#####################
-# Updating SQL after the backup
-#####################
-
-- name: Assemble & Import only updates & Assemble & Import only customs
-  shell: "bash /home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/apps/db_assembler/db_assembler.sh {{ item }}"
-  with_items:
-    - 7
-    - 8
-  when: former_build.stat.exists is defined and former_build.stat.exists == true

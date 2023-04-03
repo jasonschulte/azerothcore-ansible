@@ -1,5 +1,5 @@
 ---
-- hosts: "{{ target }}"
+- hosts: "wow.rem0te.in"
   connection: ssh
   become: no
   roles:

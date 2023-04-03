@@ -59,8 +59,8 @@
 # Stop old server
 #####################
 
-# Stop before the database dumps etc. below
-- name: Stop world- and authserver
+#Stop before the database dumps etc. below
+- name: Stop world and authserver
   systemd:
     state: stopped
     name: "{{ item }}"
@@ -80,7 +80,7 @@
 # Symlink new build
 #####################
 
-# Ownership doesn't seem to work?
+#Ownership doesn't seem to work?
 - name: Update symlink to the latest release
   file:
     src: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_server_release }}"
@@ -93,23 +93,23 @@
 # Start new server
 #####################
 
-- name: Start world- and authserver
-  systemd:
-    state: started
-    name: "{{ item }}"
-  with_items:
-    - "worldserver"
-    - "authserver"
-  become: yes
+# - name: Start world- and authserver
+#   systemd:
+#     state: started
+#     name: "{{ item }}"
+#   with_items:
+#     - "worldserver"
+#     - "authserver"
+#   become: yes
 
 #####################
 # Setup backup
 #####################
 
-- name: Setup backup using cron
-  cron:
-    name: Backup Azerothcore databases
-    minute: "{{ azerothcore_cron_minute }}"
-    hour: "{{ azerothcore_cron_hour }}"
-    job: "cd /home/{{ azerothcore_user }}/{{ azerothcore_folder }}/backup/ && ./backup.sh > /dev/null"
-  when: azerothcore_cron_minute != "" or azerothcore_cron_hour != ""
+# - name: Setup backup using cron
+#   cron:
+#     name: Backup Azerothcore databases
+#     minute: "{{ azerothcore_cron_minute }}"
+#     hour: "{{ azerothcore_cron_hour }}"
+#     job: "cd /home/{{ azerothcore_user }}/{{ azerothcore_folder }}/backup/ && ./backup.sh > /dev/null"
+#   when: azerothcore_cron_minute != "" or azerothcore_cron_hour != ""

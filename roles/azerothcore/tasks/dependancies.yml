@@ -1,5 +1,4 @@
 ---
-
 #####################
 # Dependancies
 #####################
@@ -86,16 +85,6 @@
     owner: "{{ azerothcore_user }}"
     group: "{{ azerothcore_user }}"
 
-- name: Check if the client folder exists
-  stat:
-    path: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_wow_client }}"
-  register: client_folder
-
-- name: Notify of problems
-  debug:
-    msg: "You need to place the client in folder '/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_wow_client }}'"
-  when: client_folder.stat.exists == false
-
 #####################
 # If the local user was just created, we will exit
 #####################
@@ -106,4 +95,4 @@
   when: user_created.changed
 
 - meta: end_play
-  when: user_created.changed or client_folder.stat.exists == false
+  when: user_created.changed

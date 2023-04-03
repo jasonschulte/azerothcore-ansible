@@ -58,26 +58,6 @@
   when: previousmodule_conf.stat.exists is defined and previousmodule_conf.stat.exists == true
 
 #####################
-# Existing DBC files
-#####################
-
-- name: Find all DBC files present from previous server
-  shell: ls "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_server }}/data/dbc/"
-  register: dbc_files
-  when: previousserver_conf.stat.exists is defined and previousserver_conf.stat.exists == true
-
-# There might be custom DBC files, such as from the "mod-arac" module
-- name: Copy all previous non-existant DBC files
-  copy:
-    src: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_server }}/data/dbc/{{ item }}"
-    dest: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_server_release }}/data/dbc/"
-    force: "no" # This is important
-    remote_src: "yes"
-  with_items:
-    - "{{ dbc_files.stdout_lines }}"
-  when: previousserver_conf.stat.exists is defined and previousserver_conf.stat.exists == true
-
-#####################
 # New configuration files
 #####################
 
@@ -129,29 +109,6 @@
   when: authserver_conf.stat.exists is defined and authserver_conf.stat.exists == false
 
 #####################
-# Database script
-#####################
-
-- name: Copy 'config.sh' from the source
-  copy:
-    src: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/conf/dist/config.sh"
-    dest: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/conf/"
-    remote_src: "yes"
-
-- name: Modify 'config.sh'
-  replace:
-    path: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/conf/dist/config.sh"
-    regexp: "{{ item.regexmatch }}"
-    replace: "{{ item.replace }}"
-  with_items:
-    - { regexmatch: "MYSQL_USER='.*';", replace: "MYSQL_USER='{{ azerothcore_db_user }}'" }
-    - { regexmatch: "MYSQL_PASS='.*';", replace: "MYSQL_PASS='{{ azerothcore_db_password }}'" }
-    - { regexmatch: "MYSQL_HOST='.*';", replace: "MYSQL_HOST='{{ azerothcore_db_server }}'" }
-    - { regexmatch: "^DB_AUTH_NAME=.*", replace: 'DB_AUTH_NAME="{{ azerothcore_db_auth }}"' }
-    - { regexmatch: "^DB_CHARACTERS_NAME=.*", replace: 'DB_CHARACTERS_NAME="{{ azerothcore_db_characters }}"' }
-    - { regexmatch: "^DB_WORLD_NAME=.*", replace: 'DB_WORLD_NAME="{{ azerothcore_db_world }}"' }
-
-#####################
 # Systemd files
 #####################
 
@@ -167,11 +124,24 @@
   become: true
   register: systemd_files
 
-- name: Enable systemd services
+- name: Enable systemd services - authserver
   systemd:
     enabled: "yes"
-    name:
-      - authserver
-      - worldserver
+    name: authserver
   become: true
-  when: azerothcore_service == "enabled"
+  when: azerothcore_service == "enable"
+
+- name: Enable systemd services - worldserver
+  systemd:
+    enabled: "yes"
+    name: worldserver
+  become: true
+  when: azerothcore_service == "enable"
+
+- name: Update symlink to data folder
+  file:
+    src: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/data/{{ azerothcore_data_version }}"
+    path: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_server_release }}/data"
+    state: link
+    owner: "{{ azerothcore_user }}"
+    group: "{{ azerothcore_user }}"
