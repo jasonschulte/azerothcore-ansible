@@ -11,10 +11,11 @@
     state: "directory"
     owner: "{{ azerothcore_user }}"
     group: "{{ azerothcore_user }}"
+  when: data_folder.stat.exists == false
 
 - name: Extract map data
   unarchive:
     src: "{{ azerothcore_data_url }}/download/{{ azerothcore_data_version }}/data.zip"
     dest: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/data/{{ azerothcore_data_version }}"
     remote_src: yes
-  when: data_folder.stat.exists == false    
+  when: data_folder.stat.exists == false
