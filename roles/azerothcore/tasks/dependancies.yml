@@ -73,10 +73,6 @@
     dest: "/home/{{ azerothcore_user }}/.my.cnf"
     mode: 0600
 
-#####################
-# The game client location
-#####################
-
 - name: Create base folder
   file:
     path: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}"
