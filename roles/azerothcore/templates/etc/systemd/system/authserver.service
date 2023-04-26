@@ -17,6 +17,8 @@ RestartSec=10s
 
 Restart=always
 
+After=network-online.target
+Wants=network-online.target
 
 [Install]
 WantedBy=multi-user.target
