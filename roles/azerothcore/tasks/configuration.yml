@@ -112,31 +112,31 @@
 # Systemd files
 #####################
 
-# - name: Copy systemd files for easy stop/start/restart
-#   template:
-#     src: "etc/systemd/system/{{ item }}"
-#     dest: "/etc/systemd/system/{{ item }}"
-#     owner: "root"
-#     group: "root"
-#   with_items:
-#     - authserver.service
-#     - worldserver.service
-#   become: true
-#   register: systemd_files
+- name: Copy systemd files for easy stop/start/restart
+  template:
+    src: "etc/systemd/system/{{ item }}"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: "root"
+    group: "root"
+  with_items:
+    - authserver.service
+    - worldserver.service
+  become: true
+  register: systemd_files
 
-# - name: Enable systemd services - authserver
-#   systemd:
-#     enabled: "yes"
-#     name: authserver
-#   become: true
-#   when: azerothcore_service == "enable"
+- name: Enable systemd services - authserver
+  systemd:
+    enabled: "yes"
+    name: authserver
+  become: true
+  when: azerothcore_service == "enable"
 
-# - name: Enable systemd services - worldserver
-#   systemd:
-#     enabled: "yes"
-#     name: worldserver
-#   become: true
-#   when: azerothcore_service == "enable"
+- name: Enable systemd services - worldserver
+  systemd:
+    enabled: "yes"
+    name: worldserver
+  become: true
+  when: azerothcore_service == "enable"
 
 - name: Update symlink to data folder
   file:

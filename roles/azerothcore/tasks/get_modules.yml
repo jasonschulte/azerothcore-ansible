@@ -41,3 +41,11 @@
     version: "{{ transmog_branch }}"
     force: "{{ azerothcore_git_force }}"
   become_user: "{{ azerothcore_user }}"
+
+- name: Checkout Guildhouse module
+  git:
+    repo: "{{ guildhouse_git }}"
+    dest: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/modules/mod-guildhouse"
+    version: "{{ guildhouse_branch }}"
+    force: "{{ azerothcore_git_force }}"
+  become_user: "{{ azerothcore_user }}"
