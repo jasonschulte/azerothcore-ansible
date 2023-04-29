@@ -19,6 +19,8 @@ Restart=always
 
 After=network-online.target
 Wants=network-online.target
+After=mysql.service
+Requires=mysql.service
 
 [Install]
 WantedBy=multi-user.target
