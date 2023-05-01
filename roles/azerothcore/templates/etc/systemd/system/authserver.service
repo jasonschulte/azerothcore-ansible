@@ -17,8 +17,6 @@ RestartSec=10s
 
 Restart=always
 
-After=network-online.target
-Wants=network-online.target
 After=mysql.service
 Requires=mysql.service
 
