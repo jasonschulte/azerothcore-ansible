@@ -49,3 +49,11 @@
     version: "{{ guildhouse_branch }}"
     force: "{{ azerothcore_git_force }}"
   become_user: "{{ azerothcore_user }}"
+
+- name: Checkout Reagent Bank module
+  git:
+    repo: "{{ reagentbank_git }}"
+    dest: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/modules/mod-reagent-bank"
+    version: "{{ reagentbank_branch }}"
+    force: "{{ azerothcore_git_force }}"
+  become_user: "{{ azerothcore_user }}"
