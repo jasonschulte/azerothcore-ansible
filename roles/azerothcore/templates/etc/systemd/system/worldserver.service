@@ -24,4 +24,4 @@ After=mysql.service
 Requires=mysql.service
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-user.target mysql.service
