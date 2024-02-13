@@ -10,13 +10,13 @@
     force: "{{ azerothcore_git_force }}"
   become_user: "{{ azerothcore_user }}"
 
-- name: Checkout Autobalance module
-  git:
-    repo: "{{ autobalance_git }}"
-    dest: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/modules/mod-autobalance"
-    version: "{{ autobalance_branch }}"
-    force: "{{ azerothcore_git_force }}"
-  become_user: "{{ azerothcore_user }}"
+# - name: Checkout Autobalance module
+#   git:
+#     repo: "{{ autobalance_git }}"
+#     dest: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/modules/mod-autobalance"
+#     version: "{{ autobalance_branch }}"
+#     force: "{{ azerothcore_git_force }}"
+#   become_user: "{{ azerothcore_user }}"
 
 - name: Checkout Eluna module
   git:
@@ -32,6 +32,7 @@
     dest: "/home/{{ azerothcore_user }}/{{ azerothcore_folder }}/{{ azerothcore_source }}/modules/mod-individual-progression"
     version: "{{ ipp_branch }}"
     force: "{{ azerothcore_git_force }}"
+    depth: "1"
   become_user: "{{ azerothcore_user }}"
 
 - name: Checkout Transmog module
