@@ -1,0 +1,40 @@
+clone and customize all forked modules on desktop
+    - fix ipp data/sql folder
+    - fully audit ipp sql changes (i.e. don't lower Onyxia level)
+    - fix transmog creature id collision with reagent bank
+    - ah-bot item split and num items
+    - 
+update ansible to deploy "new-server"
+    - change to upstream npcbot repo
+    - change to customized modules repos
+    - new db
+Deploy "new-server"
+    - backup database - (golden image)
+    - minimal config changes
+    - minimal testing
+        - add bots, enter dungeons, Onyxia test
+    - merge old-server config
+    - repeat testing ^^
+    - delete all bots or wipe/rollback db
+Merge characters DB
+    - directly copy as much as possible
+    - skip npcbots and transmog
+    - keep reagent bank and guild house
+    - double check all db tables from mods
+More testing
+    - reagent bank
+    - guild house
+    - ah bot
+    - transmog
+    - bots, dungeons, ony
+Create New Mod to customize world DB
+    - spell cooldown overrides
+    - quests to allow all profession specializations
+    - allow commands to lower GM levels
+(Optional) Transfer bots or transfer bot gear
+
+Further Custom Ideas
+    - guild reagent bank
+    - add transmog and reagent bank to cities and guild house
+    - change hearthstone into pocket portal - https://github.com/milestorme/mod-pocket-portal
+    - add bot vendor
